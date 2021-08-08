@@ -1,0 +1,11 @@
+{
+    "name": "eric/di_demo",
+    "require": {
+
+    },
+    "autoload": {
+        "classmap": [
+            "package"
+        ]
+    }
+}
