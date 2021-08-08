@@ -1,0 +1,11 @@
+{
+    "name": "eric/laravel_demo",
+    "require": {
+
+    },
+    "autoload": {
+        "classmap": [
+            "Package"
+        ]
+    }
+}
