@@ -9,7 +9,7 @@ use Illuminate\Contracts\Container\BindingResolutionException;
 class Container
 {
     protected $buildStack   = [];//構建棧(優化3)
-    protected $with = []; //with參數，存放未做約定的參數(優化6)
+    protected $with = []; //with參數，存放未做約定的參數(優化5)
 
     //生成實例
     public function make($abstrate,$parameter=[]){
@@ -74,9 +74,9 @@ class Container
                 continue;
             }
             
-            //判斷依賴是否能取到class(優化7)
+            //判斷依賴是否能取到class(優化6)
             if(!$dependency->getClass()){
-                //否，則執行resolvePrimitive方法(優化7)
+                //否，則執行resolvePrimitive方法(優化6)
                 $results[]=$this->resolvePrimitive($dependency);
                
             }
@@ -88,18 +88,18 @@ class Container
     }
 
      /*
-    *   如果參數是一個字符或者其他基元類型時，不是我們想要依賴，需要判斷其是否有默認值，如果有默認值返回默認值，沒有的話不是我們想要依賴，容器拋出異常(優化7)
+    *   如果參數是一個字符或者其他基元類型時，不是我們想要依賴，需要判斷其是否有默認值，如果有默認值返回默認值，沒有的話不是我們想要依賴，容器拋出異常(優化6)
     *   
     */
     protected function resolvePrimitive(ReflectionParameter $dependency){
         
-        //判斷是否有默認值(優化7)
+        //判斷是否有默認值(優化6)
         if($dependency->isDefaultValueAvailable()){
-            //有，則回傳默認值(優化7)
+            //有，則回傳默認值(優化6)
             return $dependency->getDefaultValue();
         }
 
-        //否，則執行unresolvablePrimitive方法拋出異常(優化7)
+        //否，則執行unresolvablePrimitive方法拋出異常(優化6)
         $this->unresolvablePrimitive($dependency);
 
     }
@@ -107,7 +107,7 @@ class Container
 
     /*
     *
-    *   拋出依賴不能被解析的異常(優化7)
+    *   拋出依賴不能被解析的異常(優化6)
     *
     */ 
     protected function unresolvablePrimitive(ReflectionParameter $parameter){
@@ -134,19 +134,19 @@ class Container
     }
 
 
-    //判斷依賴是否做了參數覆蓋(優化6)
+    //判斷依賴是否做了參數覆蓋(優化5)
     protected function hasParameterOverride($dependency){
         return array_key_exists(
             $dependency->name,$this->getLastParameterOverride()
         );
     }
 
-    //獲取依賴的覆蓋參數(優化6)
+    //獲取依賴的覆蓋參數(優化5)
     protected function getParameterOverride($dependency){
         return $this->getLastParameterOverride()[$dependency->name];
     }
 
-    //獲取最後覆蓋的參數(優化6)
+    //獲取最後覆蓋的參數(優化5)
     protected function getLastParameterOverride(){
         return count($this->with) ?  end($this->with) : [];
     }
@@ -163,8 +163,8 @@ class Container
 *   4.捕捉依賴解析拋出的異常
 *
 *   解析依賴遇到的問題 => 優化
-*   6.如果傳入的依賴沒有做約定，那麼此時在使用反射類獲取構造參數時，會把參數變量名作為類的名稱去實例化並拋出異常，在此時我們引入with參數，用來覆蓋未做約定的參數
-*   7.如果傳入的的依賴是字符或者其他不能被實例化的基元類型，我們引入resolvePrimitive方法來判斷依賴是否有默認值，如果有的話，返回默認值，沒有則拋出異常
+*   5.如果傳入的依賴沒有做約定，那麼此時在使用反射類獲取構造參數時，會把參數變量名作為類的名稱去實例化並拋出異常，在此時我們引入with參數，用來覆蓋未做約定的參數
+*   6.如果傳入的的依賴是字符或者其他不能被實例化的基元類型，我們引入resolvePrimitive方法來判斷依賴是否有默認值，如果有的話，返回默認值，沒有則拋出異常
 *
 */ 
 

@@ -8,7 +8,7 @@ require __DIR__.'/../vendor/autoload.php';
 class Log
 {
     protected $file;
-    public function __construct(String $file='798879'){
+    public function __construct(String $file){
         $this->file=$file;
     }
 }
