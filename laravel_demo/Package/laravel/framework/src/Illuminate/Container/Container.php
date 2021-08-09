@@ -4,21 +4,26 @@ namespace Illuminate\Container;
 use ReflectionClass;
 use ReflectionException;
 use ReflectionParameter;
+use Illuminate\Support\Arr;
 use Illuminate\Contracts\Container\BindingResolutionException;
 
 class Container
 {
     protected $buildStack   = [];//構建棧(優化3)
     protected $with = []; //with參數，存放未做約定的參數(優化5)
+    protected $aliases = [];
+    protected $contextual   = [];//綁定上下文映射關係
 
     //生成實例
-    public function make($abstrate,$parameter=[]){
-        return $this->resolve($abstrate,$parameter);
+    public function make($abstract,$parameter=[]){
+        return $this->resolve($abstract,$parameter);
     }
 
     //解析抽象
-    protected function resolve($abstrate,$parameter=[]){
-        $concrere =$abstrate;
+    protected function resolve($abstract,$parameter=[]){
+        $abstract=$this->getAlias($abstract);
+        //var_dump($abstract);
+        $concrere =$abstract;
         $this->with[]=$parameter;
         return $this->build($concrere);
     }
@@ -152,6 +157,42 @@ class Container
     }
 
 
+    //給實例設置別名
+    public function alias($abstract,$alias){
+        if($abstract==$alias){
+            throw new LogicException("{$abstract} is aliased to itself");
+        }
+
+        return $this->aliases[$alias]=$abstract;
+
+    }
+
+    public function getAlias($abstract){
+     
+        if(!isset($this->aliases[$abstract])){
+            return $abstract; 
+        }
+
+        return $this->getAlias($this->aliases[$abstract]);
+    }
+
+    public function when($concrete){
+        $aliases=[];
+
+        foreach(Arr::wrap($concrete) as $c){
+            $aliases=$this->getAlias($c);
+        }
+        return new ContextualBindingBuilder($this,$aliases);
+    }
+
+    /*
+    *   綁定上下文映射關係
+    *
+    */
+    public function addContextualBinding($concrete, $abstract, $implementation){
+        $this->contextual[$concrete][$this->getAlias($abstract)]=$implementation;
+    }
+
 
 }
 
@@ -165,7 +206,9 @@ class Container
 *   解析依賴遇到的問題 => 優化
 *   5.如果傳入的依賴沒有做約定，那麼此時在使用反射類獲取構造參數時，會把參數變量名作為類的名稱去實例化並拋出異常，在此時我們引入with參數，用來覆蓋未做約定的參數
 *   6.如果傳入的的依賴是字符或者其他不能被實例化的基元類型，我們引入resolvePrimitive方法來判斷依賴是否有默認值，如果有的話，返回默認值，沒有則拋出異常
+*   7.引入別名，映射關係保存在$aliases中
 *
+*   8.上下文綁定
 */ 
 
 

@@ -7,5 +7,8 @@ $baseDir = dirname($vendorDir);
 
 return array(
     'Illuminate\\Container\\Container' => $baseDir . '/Package/laravel/framework/src/Illuminate/Container/Container.php',
+    'Illuminate\\Container\\ContextualBindingBuilder' => $baseDir . '/Package/laravel/framework/src/Illuminate/Container/ContextualBindingBuilder.php',
     'Illuminate\\Contracts\\Container\\BindingResolutionException' => $baseDir . '/Package/laravel/framework/src/Illuminate/Contracts/Container/BindingResolutionException.php',
+    'Illuminate\\Contracts\\Container\\ContextualBindingBuilder' => $baseDir . '/Package/laravel/framework/src/Illuminate/Contracts/Container/ContextualBindingBuilder.php',
+    'Illuminate\\Support\\Arr' => $baseDir . '/Package/laravel/framework/src/Illuminate/Support/Arr.php',
 );
