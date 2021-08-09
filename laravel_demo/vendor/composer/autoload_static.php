@@ -8,6 +8,7 @@ class ComposerStaticInit1792ddfaa498b1c54571b6ae18c981f9
 {
     public static $classMap = array (
         'Illuminate\\Container\\Container' => __DIR__ . '/../..' . '/Package/laravel/framework/src/Illuminate/Container/Container.php',
+        'Illuminate\\Contracts\\Container\\BindingResolutionException' => __DIR__ . '/../..' . '/Package/laravel/framework/src/Illuminate/Contracts/Container/BindingResolutionException.php',
     );
 
     public static function getInitializer(ClassLoader $loader)
